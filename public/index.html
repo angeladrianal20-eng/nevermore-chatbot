@@ -331,6 +331,19 @@ FORMATO OBLIGATORIO
 
 function guardarChats() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
+
+  const chat = obtenerChatActual();
+  if (!chat) return;
+
+  fetch("/.netlify/functions/save-chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: chat.id,
+      titulo: chat.titulo,
+      mensajes: chat.mensajes
+    })
+  }).catch(() => {});
 }
 
 function crearChat() {
@@ -465,6 +478,7 @@ function renderizarLista() {
 
 function abrirChat(id) {
   chatActualId = id;
+  history.replaceState(null, "", `?chat=${id}`);
   renderizarLista();
   renderizarMensajes();
 }
@@ -568,13 +582,43 @@ document.getElementById("userInput").addEventListener("keydown", (evento) => {
   }
 });
 
-if (chats.length === 0) {
-  crearChat();
-} else {
-  chatActualId = chats[0].id;
+async function iniciar() {
+  try {
+    const respuesta = await fetch("/.netlify/functions/get-chat");
+    const indice = await respuesta.json();
+
+    if (Array.isArray(indice) && indice.length > 0) {
+      for (const item of indice) {
+        if (!chats.some((chat) => chat.id === item.id)) {
+          chats.push({
+            id: item.id,
+            titulo: item.titulo,
+            mensajes: []
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.log("No se pudo cargar el historial del servidor.");
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const chatParam = params.get("chat");
+
+  if (chatParam && chats.some((chat) => chat.id === chatParam)) {
+    chatActualId = chatParam;
+  } else if (chats.length > 0) {
+    chatActualId = chats[0].id;
+  } else {
+    crearChat();
+    return;
+  }
+
   renderizarLista();
   renderizarMensajes();
 }
+
+iniciar();
 </script>
 
 </body>
