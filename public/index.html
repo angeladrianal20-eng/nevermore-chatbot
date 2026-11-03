@@ -207,7 +207,7 @@ No hagas que todos sean amables, románticos, obedientes o amigos de Angel. Las 
 
 UNIVERSO Y AMBIENTE
 
-La historia se desarrolla en el universo de Wednesday, inspirado en la segunda temporada. Nevermore Academy es un internado para jóvenes marginados situado cerca de Jericho, Vermont. Allí conviven estudiantes con habilidades sobrenaturales, linajes extraordinarios y naturalezas distintas a las de los normies.
+La historia se desarrolla en el universo de Wednesday, inspirado principalmente en la segunda temporada. Nevermore Academy es un internado para jóvenes marginados situado cerca de Jericho, Vermont. Allí conviven estudiantes con habilidades sobrenaturales, linajes extraordinarios y naturalezas distintas a las de los normies.
 
 El ambiente combina misterio, humor negro, vida escolar, relaciones complejas, rivalidades, secretos familiares y sucesos sobrenaturales.
 
@@ -334,10 +334,92 @@ function guardarChats() {
 }
 
 function crearChat() {
+  const mensajeInicial = `*Academia Nevermore — Inicio del semestre, 7:45 a. m.*
+
+*La mañana transcurre con calma sobre los edificios góticos de Nevermore. Una neblina ligera cubre los jardines y el murmullo de los estudiantes va llenando los pasillos: maletas que arrastran por el suelo, conversaciones dispersas y saludos entre viejos conocidos anuncian el comienzo de un nuevo semestre.*
+
+*No hay ceremonias especiales ni acontecimientos extraordinarios. Para la mayoría, es simplemente otro regreso a clases.*
+
+Enid: *Revisa su horario y deja escapar un pequeño suspiro.* Te juro que este año quiero tener un semestre tranquilo. Sin monstruos, sin persecuciones y, sobre todo, sin terminar involucrada en algún desastre.
+
+Bruno: *Suelta una pequeña risa.* Siempre dices lo mismo, pero parece que los problemas tienen una especie de debilidad por ti.
+
+Enid: *Frunce el ceño.* ¡Eso no es gracioso!
+
+Bruno: *Sonríe, divertido.* Un poquito sí.
+
+*Enid le da un ligero golpe en el brazo. Bruno sonríe, disfrutando de su reacción, antes de acompañarla hacia el tablón de anuncios.*
+
+*A unos metros, Ajax conversa con otros estudiantes. Su mirada se desvía brevemente hacia Enid y Bruno, aunque decide continuar con lo suyo. No parece tener intención de interrumpirlos.*
+
+*En una mesa apartada del vestíbulo, Wednesday Addams lee con tranquilidad. El ruido de los estudiantes no parece afectarle demasiado.*
+
+Wednesday: *Pasa una página de su libro sin levantar demasiado la mirada.* La capacidad humana para convertir un simple regreso a clases en un acontecimiento insoportablemente ruidoso sigue siendo admirable.
+
+*No espera respuesta. Tampoco parece necesitarla.*
+
+*En otro sector, Bianca y Divina comparan sus horarios mientras Eugene habla sobre sus planes para el nuevo semestre.*
+
+Eugene: *Habla con entusiasmo.* Este año podríamos organizar una actividad relacionada con las abejas. Tengo algunas ideas bastante interesantes.
+
+Bianca: *Lo mira de reojo.* Siempre tienes ideas relacionadas con las abejas, Eugene.
+
+Eugene: *Sonríe.* Porque las abejas son interesantes.
+
+Divina: *Suspira suavemente.* No voy a discutir eso, pero quizá deberíamos preocuparnos primero por nuestras clases.
+
+*La conversación continúa sin mayor importancia.*
+
+*8:00 a. m. — Vestíbulo principal.*
+
+*El director Barry Dort aparece frente a las escaleras con una carpeta en las manos. Espera unos segundos hasta conseguir que la mayoría preste atención.*
+
+Dort: *Recorre el vestíbulo con la mirada.* Buenos días. Espero que hayan disfrutado de sus vacaciones. Los horarios están disponibles en secretaría y los estudiantes nuevos deberán consultar allí cualquier información relacionada con sus asignaturas.
+
+*Su discurso continúa con los avisos habituales sobre las normas, las actividades académicas y las restricciones de determinadas zonas.*
+
+Dort: *Hace una pausa.* Recuerden que las instalaciones deben utilizarse correctamente. Y agradecería que este semestre no tengamos que reparar nuevamente los daños ocasionados por experimentos estudiantiles.
+
+Wednesday: *Sin apartar la mirada de su libro.* Qué decepcionante. Ya estaba preparando una lista.
+
+*Dort continúa hablando como si no hubiera escuchado el comentario.*
+
+*Poco a poco, el vestíbulo vuelve a llenarse de conversaciones. Los estudiantes comienzan a dirigirse hacia sus respectivas aulas, algunos acompañados y otros concentrados en sus propios asuntos.*
+
+*En secretaría, los registros de los estudiantes nuevos permanecen junto a los documentos administrativos del semestre. Entre ellos figura el nombre de Angel Vale, incorporado recientemente a la institución.*
+
+*No hubo anuncios especiales sobre su llegada. Ningún estudiante recibió instrucciones para recibirlo y nadie tiene motivos para prestarle una atención particular. Para la mayoría, es simplemente otro nombre desconocido en los registros de Nevermore.*
+
+*Mientras tanto, la vida académica continúa.*
+
+Enid: *Mira nuevamente su horario y luego a Bruno.* Espera... ¿no tenemos clase en el edificio norte?
+
+Bruno: *Asiente.* Sí.
+
+Enid: *Frunce el ceño.* ¿Y por qué estamos aquí?
+
+Bruno: *Sonríe.* Porque llevas diez minutos intentando convencerme de que sabes orientarte.
+
+Enid: *Protesta.* ¡No vuelvas a mencionar eso!
+
+*Ambos se alejan entre las conversaciones del pasillo.*
+
+*Wednesday guarda su libro y se dirige con calma hacia su primera clase. Bianca y Divina toman otro camino, mientras Eugene se apresura a terminar una conversación antes de que suene el timbre.*
+
+*Nevermore sigue siendo la misma academia de siempre: peculiar, impredecible y llena de personas con sus propios asuntos.*
+
+*Entre tantos rostros, nombres y conversaciones, hay espacio para alguien nuevo sin que su presencia tenga que convertirse inmediatamente en un acontecimiento.*
+
+*El semestre apenas comienza. Nadie conoce todavía las historias que podrían cruzarse durante aquellos meses, ni existe razón para anticipar lo que sucederá después.*
+
+*La mañana continúa en Nevermore.*`;
+
   const chat = {
     id: Date.now().toString(),
     titulo: "Nuevo chat",
-    mensajes: []
+    mensajes: [
+      { role: "assistant", content: mensajeInicial }
+    ]
   };
   chats.unshift(chat);
   chatActualId = chat.id;
