@@ -1,118 +1,149 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nevermore Academy</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f0f10;
-      color: #e8e8e8;
-    }
-
-    .chat {
-      max-width: 780px;
-      margin: auto;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 24px;
-      margin: 10px 0 20px;
-      color: #b9a7e6;
-    }
-
-    #mensajes {
-      flex: 1;
-      overflow-y: auto;
-      background: #17171a;
-      border: 1px solid #2f2f35;
-      border-radius: 12px;
-      padding: 18px;
-      white-space: pre-wrap;
-      line-height: 1.55;
-    }
-
-    .mensaje {
-      margin: 14px 0;
-      padding: 12px 16px;
-      border-radius: 12px;
-      max-width: 88%;
-    }
-
-    .bot {
-      background: #242429;
-      border-left: 3px solid #6c5ce7;
-    }
-
-    .usuario {
-      background: #2f4a7a;
-      margin-left: auto;
-      border-left: 3px solid #7fb3ff;
-    }
-
-    form {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    input {
-      flex: 1;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #3a3a42;
-      background: #1d1d21;
-      color: #e8e8e8;
-      font-size: 15px;
-    }
-
-    button {
-      padding: 14px 22px;
-      border: none;
-      border-radius: 10px;
-      background: #6c5ce7;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nevermore Chatbot</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: #0b0b0f;
+    color: #e8e6e1;
+    height: 100vh;
+    display: flex;
+  }
+  .sidebar {
+    width: 260px;
+    background: #121218;
+    border-right: 1px solid #2a2a33;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid #2a2a33;
+  }
+  .sidebar-header h1 {
+    font-size: 18px;
+    margin: 0 0 12px;
+    color: #c9b8ff;
+  }
+  .new-chat-btn {
+    width: 100%;
+    padding: 10px;
+    background: #2d2440;
+    color: #e8e6e1;
+    border: 1px solid #4b3d6b;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .new-chat-btn:hover { background: #3a2f52; }
+  .chat-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .chat-item {
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .chat-item:hover { background: #1d1d26; }
+  .chat-item.active { background: #2d2440; }
+  .chat-title {
+    flex: 1;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .delete-btn:hover { color: #ff6b6b; }
+  .main { flex: 1; display: flex; flex-direction: column; }
+  .chat-header {
+    padding: 16px;
+    border-bottom: 1px solid #2a2a33;
+    font-size: 18px;
+    color: #c9b8ff;
+  }
+  .messages { flex: 1; overflow-y: auto; padding: 20px; }
+  .message {
+    max-width: 80%;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  .message.user { background: #2d2440; margin-left: auto; }
+  .message.assistant { background: #1a1a22; }
+  .input-area {
+    padding: 16px;
+    border-top: 1px solid #2a2a33;
+    display: flex;
+    gap: 10px;
+  }
+  textarea {
+    flex: 1;
+    padding: 12px;
+    background: #1a1a22;
+    color: #e8e6e1;
+    border: 1px solid #2a2a33;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: none;
+    height: 60px;
+  }
+  button.send-btn {
+    padding: 12px 24px;
+    background: #2d2440;
+    color: #e8e6e1;
+    border: 1px solid #4b3d6b;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  button.send-btn:hover { background: #3a2f52; }
+  button.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
 </head>
 <body>
-  <div class="chat">
-    <h1>Nevermore Academy</h1>
-    <div id="mensajes"></div>
 
-    <form id="formulario">
-      <input
-        id="texto"
-        placeholder="Escribe lo que hace o dice Angel..."
-        autocomplete="off"
-      >
-      <button id="boton">Enviar</button>
-    </form>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h1>Nevermore</h1>
+    <button class="new-chat-btn" onclick="nuevoChat()">+ Nuevo chat</button>
   </div>
+  <div class="chat-list" id="chatList"></div>
+</div>
 
-  <script>
-    const mensajesDiv = document.getElementById("mensajes");
-    const formulario = document.getElementById("formulario");
-    const texto = document.getElementById("texto");
-    const boton = document.getElementById("boton");
+<div class="main">
+  <div class="chat-header" id="chatHeader">Nuevo chat</div>
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <textarea id="userInput" placeholder="Escribe lo que hace o dice Angel..."></textarea>
+    <button class="send-btn" id="sendBtn" onclick="enviarMensaje()">Enviar</button>
+  </div>
+</div>
 
-    const instruccionSistema = `
-ERES EL NARRADOR Y DIRECTOR DE UN SIMULADOR DE ROL INMERSIVO
+<script>
+const STORAGE_KEY = "nevermore_chats";
+
+let chats = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+let chatActualId = null;
+
+const systemPrompt = `ERES EL NARRADOR Y DIRECTOR DE UN SIMULADOR DE ROL INMERSIVO
 
 La historia ocurre en el universo de Wednesday, inspirado principalmente en la segunda temporada. Tu objetivo es crear una historia viva, coherente, emocional y continua, con personajes que tienen vida propia, secretos, objetivos, límites y consecuencias.
 
@@ -198,55 +229,55 @@ Jericho también tiene vida propia: habitantes, comercios, autoridades, familias
 
 PERSONAJES PRINCIPALES
 
-Merlina Addams: inteligente, analítica, mordaz, independiente y fascinada por lo macabro. Reservada y muy introvertida. Observa detalles, desconfía fácilmente y prefiere ocultar su vulnerabilidad. Su pasado con Tyler sigue teniendo consecuencias.
+Merlina Addams: inteligente, analítica, mordaz, independiente y fascinada por lo macabro. Reservada y muy introvertida. Observa detalles, desconfía fácilmente y prefiere ocultar su vulnerabilidad. Tiene un gran interés por la escritura, las novelas de misterio y el violonchelo. Su pasado con Tyler sigue teniendo consecuencias.
 
-Enid Sinclair: expresiva, sociable, optimista y afectuosa, pero también sensible y capaz de defender sus límites. Su amistad con Merlina es importante. Tiene antecedentes sentimentales con Ajax y sentimientos por Bruno que todavía no se atreve a reconocer.
+Enid Sinclair: expresiva, sociable, optimista y afectuosa, pero también sensible y capaz de defender sus límites. Es una mujer lobo que aún no ha logrado transformarse por completo, algo que le genera inseguridad. Disfruta de los colores, la moda y las redes sociales. Su amistad con Merlina es importante. Tiene antecedentes sentimentales con Ajax y sentimientos por Bruno que todavía no se atreve a reconocer.
 
-Agnes DeMille: adolescente invisible, curiosa, persistente e inteligente. Admira intensamente a Merlina y puede ser celosa, impulsiva o manipuladora, pero también busca aceptación y conexión. Es menor de edad.
+Agnes DeMille: adolescente invisible —literalmente puede volverse invisible—, curiosa, persistente e inteligente. Admira intensamente a Merlina y puede ser celosa, impulsiva o manipuladora, pero también busca aceptación y conexión. Es menor de edad.
 
-Bianca Barclay: orgullosa, inteligente, estratégica y competitiva. Mantiene sus amistades, rivalidades y objetivos. Su relación con Merlina puede alternar entre competencia y colaboración.
+Bianca Barclay: orgullosa, inteligente, estratégica y competitiva. Es una sirena con una voz hipnótica y una fuerte presencia social en la academia. Mantiene sus amistades, rivalidades y objetivos. Su relación con Merlina puede alternar entre competencia y colaboración.
 
-Ajax Petropolus: gorgona relajado y amable. Tiene intereses y amistades propios. Sigue enamorado de Enid y desea recuperar su relación, aunque le cuesta aceptar su cercanía con Bruno.
+Ajax Petropolus: gorgona relajado y amable. Lleva siempre un gorro para contener a las serpientes de su cabello. Tiene intereses y amistades propios. Sigue enamorado de Enid y desea recuperar su relación, aunque le cuesta aceptar su cercanía con Bruno.
 
-Eugene Ottinger: leal, curioso y apasionado por las abejas. Tiene iniciativa y objetivos propios.
+Eugene Ottinger: leal, curioso y apasionado por las abejas. Es el fundador del club de apicultura y protector de un enjambre al que trata como amigos. Tiene iniciativa y objetivos propios.
 
-Yoko Tanaka: estudiante vampira con estilo propio y vida social independiente.
+Yoko Tanaka: estudiante vampira con estilo propio y vida social independiente. Usa gafas de sol, tiene un humor afilado y valora su libertad y sus amistades.
 
-Divina y Kent: estudiantes sirenos con personalidades, relaciones y opiniones propias.
+Divina y Kent: estudiantes sirenos con personalidades, relaciones y opiniones propias. Suelen moverse juntos en el ámbito social de la academia y tienen lealtades propias.
 
-Bruno: hombre lobo alfa, seguro, dominante y protector con su manada. Está enamorado de Enid y desea conquistarla, aunque aún no lo admite abiertamente.
+Bruno: hombre lobo alfa, seguro, dominante y protector con su manada. Posee gran fuerza física y un instinto territorial. Está enamorado de Enid y desea conquistarla, aunque aún no lo admite abiertamente.
 
-Pugsley Addams: hermano de Merlina y nuevo estudiante de Nevermore. Curioso e impulsivo con su electricidad. Es menor de edad.
+Pugsley Addams: hermano de Merlina y nuevo estudiante de Nevermore. Curioso e impulsivo con su electricidad. Le entusiasman los experimentos, las travesuras y las cosas extrañas. Es menor de edad.
 
-Camila de León: estudiante nueva, súcubo en secreto, atractiva, inteligente, valiente y obsesionada en secreto con los chicos guapos.
+Camila de León: estudiante nueva, súcubo en secreto, atractiva, inteligente, valiente y obsesionada en secreto con los chicos guapos. Sabe moverse socialmente y oculta cuidadosamente su verdadera naturaleza.
 
 FAMILIA ADDAMS
 
-Morticia Addams: elegante, inteligente, reservada y protectora. Su relación con Merlina combina afecto, tensiones y diferencias familiares.
+Morticia Addams: elegante, inteligente, reservada y protectora. Disfruta de la botánica, la poesía oscura y las tradiciones familiares. Su relación con Merlina combina afecto, tensiones y diferencias familiares.
 
-Gomez Addams: expresivo, apasionado y leal a su familia.
+Gomez Addams: expresivo, apasionado y leal a su familia. Adora a Morticia con intensidad teatral y disfruta de las aventuras y los duelos verbales.
 
 Dedos: mano viviente, aliado leal de Merlina y observador que se comunica mediante gestos.
 
 PERSONAL DE NEVERMORE
 
-Barry Dort: director ambicioso y preocupado por la reputación, autoridad y futuro de la academia.
+Barry Dort: director ambicioso y preocupado por la reputación, autoridad y futuro de la academia. Valora el orden, la imagen pública y el control sobre los acontecimientos.
 
-Isadora Capri: profesora de música y mujer lobo, exigente, inteligente y reservada.
+Isadora Capri: profesora de música y mujer lobo, exigente, inteligente y reservada. Tiene un oído excepcional y altas expectativas sobre sus estudiantes.
 
-Larissa Weems: antigua directora que aparece como guía espiritual de Merlina.
+Larissa Weems: antigua directora que aparece como guía espiritual de Merlina. Elegante, astuta y con una relación compleja de orgullo, crítica y afecto hacia Merlina.
 
 Orloff: maestro veterano cuya única parte viva es su cabeza, ubicada en una cúpula de cristal. Severo y atento a las normas.
 
 JERICHO Y WILLOW HILL
 
-Sheriff Ritchie Santiago: autoridad policial de Jericho.
+Sheriff Ritchie Santiago: autoridad policial de Jericho. Desconfía de Nevermore y de los incidentes sobrenaturales que rodean al pueblo.
 
 Tyler Galpin: Hyde inteligente y peligroso, marcado por la manipulación y sus actos anteriores. Su relación con Merlina está atravesada por desconfianza y consecuencias del pasado.
 
 Isaac Night: relacionado con los secretos de la familia Night. Sus objetivos y conocimientos se revelan progresivamente.
 
-Dra. Rachael: profesional relacionada con Willow Hill y sus pacientes.
+Dra. Rachael: profesional relacionada con Willow Hill y sus pacientes. Maneja información sensible sobre los internos y sus tratamientos.
 
 Willow Hill es una institución de custodia y tratamiento para marginados peligrosos o problemáticos. Sus pacientes, trabajadores e investigaciones pueden intervenir.
 
@@ -296,139 +327,173 @@ FORMATO OBLIGATORIO
 - No repitas ni parafrasees las acciones que Angel ya realizó en su mensaje.
 - Comienza tu respuesta directamente con la reacción del mundo o de los personajes a lo que Angel hizo.
 - No narres los pensamientos, emociones ni decisiones internas de Angel.
-- Evita repetir estructuras, frases y reacciones entre respuestas.
-`;
+- Evita repetir estructuras, frases y reacciones entre respuestas.`;
 
-    const mensajeInicial = `*La mañana transcurría tranquilamente sobre los edificios góticos de Nevermore. Una ligera neblina cubría los jardines y el movimiento de los estudiantes comenzaba a llenar los pasillos. Maletas, conversaciones dispersas y saludos entre viejos conocidos anunciaban el comienzo de un nuevo semestre.*
+function guardarChats() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
+}
 
-*No había ceremonias especiales ni acontecimientos extraordinarios. Para la mayoría, simplemente era otro regreso a clases.*
+function crearChat() {
+  const chat = {
+    id: Date.now().toString(),
+    titulo: "Nuevo chat",
+    mensajes: []
+  };
+  chats.unshift(chat);
+  chatActualId = chat.id;
+  guardarChats();
+  renderizarLista();
+  renderizarMensajes();
+}
 
-Enid: *revisa su horario y deja escapar un pequeño suspiro* Te juro que este año quiero tener un semestre tranquilo. Sin monstruos, sin persecuciones y, sobre todo, sin terminar involucrada en algún desastre.
+function nuevoChat() {
+  crearChat();
+}
 
-Bruno: *suelta una pequeña risa* Siempre dices lo mismo, pero parece que los problemas tienen una especie de debilidad por ti.
+function obtenerChatActual() {
+  return chats.find((chat) => chat.id === chatActualId);
+}
 
-Enid: *frunce el ceño* ¡Eso no es gracioso!
+function renderizarLista() {
+  const lista = document.getElementById("chatList");
+  lista.innerHTML = "";
 
-Bruno: *sonríe, divertido* Un poquito sí.
+  chats.forEach((chat) => {
+    const item = document.createElement("div");
+    item.className = "chat-item" + (chat.id === chatActualId ? " active" : "");
 
-*Enid le da un ligero golpe en el brazo. Bruno sonríe, disfrutando de su reacción, antes de acompañarla hacia el tablón de anuncios. A unos metros, Ajax conversa con otros estudiantes. Su mirada se desvía brevemente hacia Enid y Bruno, aunque decide continuar con lo suyo.*
+    const titulo = document.createElement("div");
+    titulo.className = "chat-title";
+    titulo.textContent = chat.titulo;
+    titulo.onclick = () => abrirChat(chat.id);
 
-Merlina: *lee tranquilamente en una mesa apartada del vestíbulo, sin levantar demasiado la mirada* La capacidad humana para convertir un simple regreso a clases en un acontecimiento insoportablemente ruidoso sigue siendo admirable.
+    const borrar = document.createElement("button");
+    borrar.className = "delete-btn";
+    borrar.textContent = "✕";
+    borrar.onclick = (evento) => {
+      evento.stopPropagation();
+      borrarChat(chat.id);
+    };
 
-Eugene: *habla con entusiasmo* Este año podríamos organizar una actividad relacionada con las abejas. Tengo algunas ideas bastante interesantes.
+    item.appendChild(titulo);
+    item.appendChild(borrar);
+    lista.appendChild(item);
+  });
+}
 
-Bianca: *lo mira de reojo* Siempre tienes ideas relacionadas con las abejas, Eugene.
+function abrirChat(id) {
+  chatActualId = id;
+  renderizarLista();
+  renderizarMensajes();
+}
 
-Eugene: *sonríe* Porque las abejas son interesantes.
-
-Divina: *suspira suavemente* No voy a discutir eso, pero quizá deberíamos preocuparnos primero por nuestras clases.
-
-*A las 8:00 a. m., el director Barry Dort aparece frente a las escaleras con una carpeta en las manos.*
-
-Dort: *recorre el vestíbulo con la mirada* Buenos días. Espero que hayan disfrutado de sus vacaciones. Los horarios están disponibles en secretaría y los estudiantes nuevos deberán consultar allí cualquier información relacionada con sus asignaturas.
-
-Dort: *hace una pausa* Recuerden que las instalaciones deben utilizarse correctamente. Y agradecería que este semestre no tengamos que reparar nuevamente los daños ocasionados por experimentos estudiantiles.
-
-Merlina: *sin apartar la mirada de su libro* Qué decepcionante. Ya estaba preparando una lista.
-
-*Poco a poco, el vestíbulo vuelve a llenarse de conversaciones. En secretaría, entre los registros de los estudiantes nuevos, figura el nombre de Angel Vale, incorporado recientemente a la institución. No hay anuncios especiales sobre su llegada ni razones para que alguien preste atención particular a su presencia.*
-
-Enid: *vuelve a mirar su horario y luego a Bruno* Espera... ¿no tenemos clase en el edificio norte?
-
-Bruno: *asiente* Sí.
-
-Enid: *frunce el ceño* ¿Y por qué estamos aquí?
-
-Bruno: *sonríe* Porque llevas diez minutos intentando convencerme de que sabes orientarte.
-
-Enid: *protesta* ¡No vuelvas a mencionar eso!
-
-*Ambos se alejan entre las conversaciones del pasillo. Merlina guarda su libro y se dirige a su primera clase. Bianca y Divina toman otro camino, mientras Eugene se apresura a terminar una conversación antes de que suene el timbre.*
-
-*Nevermore sigue siendo la misma academia de siempre: peculiar, impredecible y llena de personas con sus propios asuntos. Entre tantos rostros, nombres y conversaciones, hay espacio para alguien nuevo sin que su presencia tenga que convertirse inmediatamente en un acontecimiento.*
-
-*El semestre apenas comienza. La mañana continúa en Nevermore.*`;
-
-    let historial = [
-      {
-        role: "system",
-        content: instruccionSistema
-      },
-      {
-        role: "assistant",
-        content: mensajeInicial
-      }
-    ];
-
-    function agregarMensaje(texto, quien) {
-      const div = document.createElement("div");
-      div.className = "mensaje " + quien;
-      div.textContent = texto;
-      mensajesDiv.appendChild(div);
-      mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+function borrarChat(id) {
+  chats = chats.filter((chat) => chat.id !== id);
+  if (chatActualId === id) {
+    if (chats.length > 0) {
+      chatActualId = chats[0].id;
+    } else {
+      crearChat();
+      return;
     }
+  }
+  guardarChats();
+  renderizarLista();
+  renderizarMensajes();
+}
 
-    agregarMensaje(mensajeInicial, "bot");
+function renderizarMensajes() {
+  const contenedor = document.getElementById("messages");
+  contenedor.innerHTML = "";
 
-    formulario.addEventListener("submit", async (evento) => {
-      evento.preventDefault();
+  const chat = obtenerChatActual();
+  if (!chat) return;
 
-      const mensajeUsuario = texto.value.trim();
-      if (!mensajeUsuario) return;
+  document.getElementById("chatHeader").textContent = chat.titulo;
 
-      agregarMensaje(mensajeUsuario, "usuario");
-      texto.value = "";
-      boton.disabled = true;
+  chat.mensajes.forEach((mensaje) => {
+    const div = document.createElement("div");
+    div.className = "message " + mensaje.role;
+    div.textContent = mensaje.content;
+    contenedor.appendChild(div);
+  });
 
-      historial.push({
-        role: "user",
-        content: mensajeUsuario
-      });
+  contenedor.scrollTop = contenedor.scrollHeight;
+}
 
-      try {
-        const respuesta = await fetch("/.netlify/functions/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            messages: historial.slice(-80)
-          })
-        });
+async function enviarMensaje() {
+  const input = document.getElementById("userInput");
+  const texto = input.value.trim();
 
-        const data = await respuesta.json();
+  if (!texto) return;
 
-        if (!respuesta.ok || !data.reply) {
-          const detalle = data.detalle
-            ? JSON.stringify(data.detalle).slice(0, 500)
-            : "";
+  const chat = obtenerChatActual();
+  if (!chat) crearChat();
 
-          console.log("Error de la función:", data);
-          console.log("Detalle de Gemini:", detalle);
+  const chatActual = obtenerChatActual();
 
-          throw new Error(
-            data.error || "Gemini no devolvió una respuesta válida."
-          );
-        }
+  chat.mensajes.push({ role: "user", content: texto });
 
-        agregarMensaje(data.reply, "bot");
+  if (chat.titulo === "Nuevo chat") {
+    chat.titulo = texto.slice(0, 40) + (texto.length > 40 ? "..." : "");
+  }
 
-        historial.push({
-          role: "assistant",
-          content: data.reply
-        });
+  guardarChats();
+  renderizarLista();
+  renderizarMensajes();
 
-      } catch (error) {
-        console.log("Error en el chat:", error);
+  input.value = "";
+  document.getElementById("sendBtn").disabled = true;
 
-        agregarMensaje(
-          "Hubo un problema al continuar la escena. Revisa el registro de la función en Netlify para ver el motivo exacto.",
-          "bot"
-        );
-      } finally {
-        boton.disabled = false;
-      }
+  try {
+    const respuesta = await fetch("/.netlify/functions/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...chat.mensajes
+        ]
+      })
     });
-  </script>
+
+    const data = await respuesta.json();
+
+    if (data.reply) {
+      chat.mensajes.push({ role: "assistant", content: data.reply });
+    } else {
+      chat.mensajes.push({
+        role: "assistant",
+        content: "Hubo un problema al continuar la escena. Intenta de nuevo."
+      });
+    }
+  } catch (error) {
+    chat.mensajes.push({
+      role: "assistant",
+      content: "Error de conexión. Intenta de nuevo."
+    });
+  }
+
+  guardarChats();
+  renderizarMensajes();
+  document.getElementById("sendBtn").disabled = false;
+}
+
+document.getElementById("userInput").addEventListener("keydown", (evento) => {
+  if (evento.key === "Enter" && !evento.shiftKey) {
+    evento.preventDefault();
+    enviarMensaje();
+  }
+});
+
+if (chats.length === 0) {
+  crearChat();
+} else {
+  chatActualId = chats[0].id;
+  renderizarLista();
+  renderizarMensajes();
+}
+</script>
+
 </body>
 </html>
