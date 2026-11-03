@@ -75,7 +75,7 @@ export default async (req) => {
 
     async function llamarGemini() {
       return fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
         {
           method: "POST",
           headers: {
