@@ -22,6 +22,8 @@ export default async (req) => {
   try {
     const { messages } = await req.json();
 
+    console.log("Petición recibida. Mensajes:", messages?.length);
+
     if (!Array.isArray(messages) || messages.length === 0) {
       return new Response(
         JSON.stringify({ error: "No se recibieron mensajes" }),
@@ -35,6 +37,7 @@ export default async (req) => {
     const apiKey = Netlify.env.get("GEMINI_API_KEY");
 
     if (!apiKey) {
+      console.log("Error: falta GEMINI_API_KEY.");
       return new Response(
         JSON.stringify({ error: "Falta GEMINI_API_KEY" }),
         {
@@ -72,13 +75,22 @@ export default async (req) => {
           contents: conversation,
           generationConfig: {
             temperature: 0.95,
-            maxOutputTokens: 1500
+            maxOutputTokens: 1200,
+            thinkingConfig: {
+              thinkingLevel: "medium"
+            }
           }
         })
       }
     );
 
     const data = await response.json();
+
+    console.log("Estado de Gemini:", response.status);
+    console.log(
+      "Respuesta de Gemini:",
+      JSON.stringify(data).slice(0, 3000)
+    );
 
     if (!response.ok) {
       return new Response(
@@ -93,17 +105,21 @@ export default async (req) => {
       );
     }
 
+    const candidato = data?.candidates?.[0];
+    const motivo = candidato?.finishReason;
     const texto =
-      data?.candidates?.[0]?.content?.parts
+      candidato?.content?.parts
         ?.map((parte) => parte.text)
         .filter(Boolean)
         .join("\n") || "";
+
+    console.log("Motivo de finalización:", motivo);
 
     if (!texto) {
       return new Response(
         JSON.stringify({
           error: "Gemini no devolvió texto.",
-          motivo: data?.candidates?.[0]?.finishReason,
+          motivo,
           detalle: data
         }),
         {
@@ -124,6 +140,8 @@ export default async (req) => {
     );
 
   } catch (error) {
+    console.log("Error del servidor:", String(error));
+
     return new Response(
       JSON.stringify({
         error: "Error del servidor",
@@ -135,4 +153,4 @@ export default async (req) => {
       }
     );
   }
-};
+};       
