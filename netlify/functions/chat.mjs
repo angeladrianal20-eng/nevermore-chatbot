@@ -37,7 +37,6 @@ export default async (req) => {
     const apiKey = Netlify.env.get("GEMINI_API_KEY");
 
     if (!apiKey) {
-      console.log("Error: falta GEMINI_API_KEY.");
       return new Response(
         JSON.stringify({ error: "Falta GEMINI_API_KEY" }),
         {
@@ -58,38 +57,56 @@ export default async (req) => {
         parts: [{ text: message.content }]
       }));
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": apiKey
-        },
-        body: JSON.stringify({
-          systemInstruction: systemMessage
-            ? {
-                parts: [{ text: systemMessage.content }]
-              }
-            : undefined,
-          contents: conversation,
-          generationConfig: {
-            temperature: 0.95,
-            maxOutputTokens: 1200,
-            thinkingConfig: {
-              thinkingLevel: "medium"
-            }
+    const cuerpo = JSON.stringify({
+      systemInstruction: systemMessage
+        ? {
+            parts: [{ text: systemMessage.content }]
           }
-        })
+        : undefined,
+      contents: conversation,
+      generationConfig: {
+        temperature: 0.95,
+        maxOutputTokens: 1000,
+        thinkingConfig: {
+          thinkingLevel: "low"
+        }
       }
-    );
+    });
 
-    const data = await response.json();
+    async function llamarGemini() {
+      return fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey
+          },
+          body: cuerpo
+        }
+      );
+    }
 
-    console.log("Estado de Gemini:", response.status);
+    let response = await llamarGemini();
+    let data = await response.json();
+
+    console.log("Primer intento. Estado:", response.status);
+
+    // Reintento si Gemini está saturado
+    if (response.status === 503 || response.status === 429) {
+      console.log("Gemini está saturado. Esperando 2 segundos...");
+
+      await new Promise((resolver) => setTimeout(resolver, 2000));
+
+      response = await llamarGemini();
+      data = await response.json();
+
+      console.log("Segundo intento. Estado:", response.status);
+    }
+
     console.log(
       "Respuesta de Gemini:",
-      JSON.stringify(data).slice(0, 3000)
+      JSON.stringify(data).slice(0, 2000)
     );
 
     if (!response.ok) {
@@ -153,4 +170,4 @@ export default async (req) => {
       }
     );
   }
-};       
+};
